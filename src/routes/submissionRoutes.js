@@ -1,4 +1,4 @@
-﻿const express = require('express');
+const express = require('express');
 const router = express.Router();
 const cors = require('cors');
 const submissionController = require('../controllers/submissionController');
@@ -16,7 +16,6 @@ const submissionRateLimiter = createRateLimiter();
 
 // Support OPTIONS preflight explicitly
 router.options('/:id/submissions', publicCors, (req, res) => res.sendStatus(204));
-router.options('/', publicCors, (req, res) => res.sendStatus(204));
 
 // POST /widgets/:id/submissions
 router.post(
@@ -26,12 +25,17 @@ router.post(
   submissionController.createSubmission
 );
 
-// POST /submissions (alternative route with widgetId in body)
-router.post(
+// Router specifically for /submissions (where widgetId is in body)
+const directSubmissionRouter = express.Router();
+directSubmissionRouter.options('/', publicCors, (req, res) => res.sendStatus(204));
+directSubmissionRouter.post(
   '/',
   publicCors,
   submissionRateLimiter,
   submissionController.createSubmission
 );
 
-module.exports = router;
+module.exports = {
+  widgetSubmissionRouter: router,
+  directSubmissionRouter
+};

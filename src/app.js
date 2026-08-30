@@ -3,7 +3,7 @@ const cors = require('cors');
 const config = require('./config');
 const errorHandler = require('./middlewares/errorHandler');
 const healthRoutes = require('./routes/health');
-const submissionRoutes = require('./routes/submissionRoutes');
+const { widgetSubmissionRouter, directSubmissionRouter } = require('./routes/submissionRoutes');
 const deliveryRoutes = require('./routes/deliveryRoutes');
 
 const app = express();
@@ -29,10 +29,22 @@ app.use('/api', deliveryRoutes);
 app.use(express.static('public'));
 
 // Public submission routes
-app.use('/api/widgets', submissionRoutes);
-app.use('/api/submissions', submissionRoutes);
-app.use('/widgets', submissionRoutes);
-app.use('/submissions', submissionRoutes);
+app.use('/api/widgets', widgetSubmissionRouter);
+app.use('/widgets', widgetSubmissionRouter);
+app.use('/api/submissions', directSubmissionRouter);
+app.use('/submissions', directSubmissionRouter);
+
+// Authenticated Auth Routes
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/auth', require('./routes/authRoutes'));
+
+// Authenticated Widget Management Routes
+app.use('/api/widgets', require('./routes/widgetRoutes'));
+app.use('/widgets', require('./routes/widgetRoutes'));
+
+// Authenticated Dashboard Analytics Routes
+app.use('/api/dashboard', require('./routes/dashboardRoutes'));
+app.use('/dashboard/api', require('./routes/dashboardRoutes'));
 
 // Root route
 app.get('/', (req, res) => {
