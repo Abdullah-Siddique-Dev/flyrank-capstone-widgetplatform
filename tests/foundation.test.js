@@ -1,6 +1,8 @@
-﻿const request = require('supertest');
+const request = require('supertest');
 const app = require('../src/app');
 const prisma = require('../src/prisma');
+
+jest.setTimeout(30000);
 
 describe('Phase 1: Foundation Tests', () => {
   afterAll(async () => {

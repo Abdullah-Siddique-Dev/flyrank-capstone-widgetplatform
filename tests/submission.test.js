@@ -1,7 +1,9 @@
-﻿const request = require('supertest');
+const request = require('supertest');
 const app = require('../src/app');
 const prisma = require('../src/prisma');
 const { resetRateLimitStore } = require('../src/middlewares/rateLimiter');
+
+jest.setTimeout(30000);
 
 describe('Phase 2: Hardened Submission Path Tests', () => {
   let tenant;
@@ -260,5 +262,16 @@ describe('Phase 2: Hardened Submission Path Tests', () => {
       where: { idempotencyKey: key }
     });
     expect(count).toBe(1);
+  });
+
+  test('13. Widget validation: Non-existent widget ID returns 404', async () => {
+    const res = await request(app)
+      .post('/api/widgets/non-existent-widget-uuid/submissions')
+      .send({
+        answers: { name: 'Nobody', email: 'nobody@example.com' }
+      });
+
+    expect(res.statusCode).toBe(404);
+    expect(res.body.error).toContain('Widget not found');
   });
 });

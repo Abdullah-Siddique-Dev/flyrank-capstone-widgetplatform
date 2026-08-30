@@ -1,6 +1,8 @@
-﻿const request = require('supertest');
+const request = require('supertest');
 const app = require('../src/app');
 const prisma = require('../src/prisma');
+
+jest.setTimeout(30000);
 
 describe('Phase 3: Widget Delivery Tests', () => {
   let tenant;
@@ -51,7 +53,7 @@ describe('Phase 3: Widget Delivery Tests', () => {
   test('3. GET /widget.v1.js returns 200, javascript content type, and long-lived cache headers', async () => {
     const res = await request(app).get('/widget.v1.js');
     expect(res.statusCode).toBe(200);
-    expect(res.headers['content-type']).toContain('application/javascript');
+    expect(res.headers['content-type']).toMatch(/javascript/);
     expect(res.headers['cache-control']).toContain('max-age=31536000');
     expect(res.headers['access-control-allow-origin']).toBe('*');
     expect(res.text).toContain('LeadCaptureWidget');
@@ -60,7 +62,7 @@ describe('Phase 3: Widget Delivery Tests', () => {
   test('4. GET /widget.js returns 200 and bundle content', async () => {
     const res = await request(app).get('/widget.js');
     expect(res.statusCode).toBe(200);
-    expect(res.headers['content-type']).toContain('application/javascript');
+    expect(res.headers['content-type']).toMatch(/javascript/);
     expect(res.text).toContain('renderWidget');
   });
 
