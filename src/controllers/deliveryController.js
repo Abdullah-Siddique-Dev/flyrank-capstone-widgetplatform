@@ -1,5 +1,4 @@
 const prisma = require('../prisma');
-const { AppError } = require('../utils/errors');
 const path = require('path');
 const fs = require('fs');
 
@@ -44,6 +43,7 @@ async function getWidgetConfig(req, res, next) {
 
 function serveWidgetScript(req, res, next) {
   try {
+    const version = req.params.version || (req.path.includes('/v1/') ? 'v1' : null);
     const filePath = path.join(__dirname, '../../public/widget.js');
 
     if (!fs.existsSync(filePath)) {
@@ -52,8 +52,13 @@ function serveWidgetScript(req, res, next) {
 
     const content = fs.readFileSync(filePath, 'utf8');
 
-    // Long-lived cache for versioned bundle (1 year, immutable)
-    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    // If version is explicitly in URL, bundle is immutable and long-term cacheable
+    if (version || req.path.includes('.v1.') || req.path.includes('/v1/')) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    } else {
+      res.setHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=600');
+    }
+
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.type('application/javascript');
 

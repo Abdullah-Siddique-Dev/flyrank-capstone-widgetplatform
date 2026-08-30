@@ -1,4 +1,4 @@
-﻿const express = require('express');
+const express = require('express');
 const router = express.Router();
 const cors = require('cors');
 const deliveryController = require('../controllers/deliveryController');
@@ -18,7 +18,10 @@ router.get('/widgets/:id/config', publicCors, deliveryController.getWidgetConfig
 router.get('/:id/config', publicCors, deliveryController.getWidgetConfig);
 
 // Versioned Widget Bundles
-router.get('/widget.js', publicCors, deliveryController.serveWidgetScript);
+router.get('/widget/v1/widget.js', publicCors, deliveryController.serveWidgetScript);
+router.get('/widget/:version/widget.js', publicCors, deliveryController.serveWidgetScript);
+router.get('/widget.v1.js', publicCors, deliveryController.serveWidgetScript);
 router.get('/widget.:version.js', publicCors, deliveryController.serveWidgetScript);
+router.get('/widget.js', publicCors, deliveryController.serveWidgetScript);
 
 module.exports = router;

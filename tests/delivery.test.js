@@ -72,4 +72,14 @@ describe('Phase 3: Widget Delivery Tests', () => {
     expect(res.headers['content-type']).toContain('text/html');
     expect(res.text).toContain('Customer Website — ACME Corp Demo');
   });
+
+  test('6. GET /widget/v1/widget.js returns 200, javascript mime type, and immutable long-term cache headers', async () => {
+    const res = await request(app).get('/widget/v1/widget.js');
+    expect(res.statusCode).toBe(200);
+    expect(res.headers['content-type']).toMatch(/javascript/);
+    expect(res.headers['cache-control']).toContain('max-age=31536000');
+    expect(res.headers['cache-control']).toContain('immutable');
+    expect(res.headers['access-control-allow-origin']).toBe('*');
+    expect(res.text).toContain('LeadCaptureWidget');
+  });
 });
