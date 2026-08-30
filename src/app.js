@@ -16,7 +16,11 @@ app.use(cors());
 app.use(express.json({ limit: config.MAX_PAYLOAD_SIZE }));
 app.use(express.urlencoded({ extended: true, limit: config.MAX_PAYLOAD_SIZE }));
 
-// Serve static public assets (e.g. widget bundle, test customer site)
+// Widget Delivery Routes (mounted first so explicit Cache-Control & CORS headers take effect)
+app.use('/', require('./routes/deliveryRoutes'));
+app.use('/api', require('./routes/deliveryRoutes'));
+
+// Serve static public assets (e.g. test customer site)
 app.use(express.static('public'));
 
 // Routes

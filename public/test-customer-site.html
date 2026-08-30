@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Website — ACME Corp Demo</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f8fafc;
+      color: #334155;
+    }
+    header {
+      background: #1e293b;
+      color: #ffffff;
+      padding: 20px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+    .badge {
+      background: #3b82f6;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+    .site-content {
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .site-content h2 {
+      margin-top: 0;
+      color: #0f172a;
+    }
+    .widget-container {
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      border: 2px dashed #cbd5e1;
+    }
+    .widget-container h3 {
+      margin-top: 0;
+      color: #64748b;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .config-bar {
+      margin-top: 20px;
+      padding: 12px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .config-bar input {
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      width: 260px;
+    }
+    .config-bar button {
+      padding: 6px 12px;
+      background: #0f172a;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Acme Corp — Test Customer Website</h1>
+    <span class="badge">Cross-Origin Client Host</span>
+  </header>
+
+  <div class="container">
+    <div class="site-content">
+      <h2>Welcome to Acme Cloud</h2>
+      <p>This is a simulated third-party customer website hosted separately from the Lead Capture Platform backend.</p>
+      <p>It demonstrates loading the platform's embeddable JavaScript widget bundle, fetching configuration across origins, and submitting leads with full protection.</p>
+      
+      <div class="config-bar">
+        <label><strong>Target Widget ID:</strong></label><br><br>
+        <input type="text" id="widget-id-input" placeholder="Paste Widget UUID here..." />
+        <button onclick="loadWidget()">Load Widget</button>
+      </div>
+    </div>
+
+    <div class="widget-container">
+      <h3>Embeddable Widget Host Container</h3>
+      <div id="embed-target">
+        <p style="color:#94a3b8; font-size:13px;">Enter a Widget ID above or create a widget in the dashboard to view the live embed here.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function loadWidget() {
+      const widgetId = document.getElementById('widget-id-input').value.trim();
+      if (!widgetId) {
+        alert('Please enter a Widget ID');
+        return;
+      }
+
+      const target = document.getElementById('embed-target');
+      target.innerHTML = ''; // reset
+
+      // Create and inject script tag dynamically
+      const script = document.createElement('script');
+      script.src = `/widget.v1.js?id=${encodeURIComponent(widgetId)}`;
+      script.async = true;
+      target.appendChild(script);
+    }
+
+    // Auto-check URL search param ?id=...
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const widgetId = urlParams.get('id');
+      if (widgetId) {
+        document.getElementById('widget-id-input').value = widgetId;
+        loadWidget();
+      }
+    });
+  </script>
+</body>
+</html>
