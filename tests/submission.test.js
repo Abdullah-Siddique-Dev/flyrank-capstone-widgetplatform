@@ -223,6 +223,8 @@ describe('Phase 2: Hardened Submission Path Tests', () => {
     });
     expect(saved).not.toBeNull();
     expect(saved.answers.email).toBe('sideeffect@example.com');
+    // Allow background job queue to settle
+    await new Promise((resolve) => setTimeout(resolve, 600));
   });
 
   test('11. CORS preflight OPTIONS request returns 204 with correct headers', async () => {
