@@ -16,17 +16,33 @@ app.use(cors());
 app.use(express.json({ limit: config.MAX_PAYLOAD_SIZE }));
 app.use(express.urlencoded({ extended: true, limit: config.MAX_PAYLOAD_SIZE }));
 
-// Widget Delivery Routes (mounted first so explicit Cache-Control & CORS headers take effect)
+// Public Delivery Routes
 app.use('/', require('./routes/deliveryRoutes'));
 app.use('/api', require('./routes/deliveryRoutes'));
 
-// Serve static public assets (e.g. test customer site)
+// Static assets (dashboard UI, test customer website)
 app.use(express.static('public'));
 
-// Routes
+// Health check
 app.use('/api', healthRoutes);
+
+// Public Submission Routes
 app.use('/api/widgets', require('./routes/submissionRoutes'));
 app.use('/api/submissions', require('./routes/submissionRoutes'));
+app.use('/widgets', require('./routes/submissionRoutes'));
+app.use('/submissions', require('./routes/submissionRoutes'));
+
+// Authenticated Auth Routes
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/auth', require('./routes/authRoutes'));
+
+// Authenticated Widget Management Routes
+app.use('/api/widgets', require('./routes/widgetRoutes'));
+app.use('/widgets', require('./routes/widgetRoutes'));
+
+// Authenticated Dashboard Analytics Routes
+app.use('/api/dashboard', require('./routes/dashboardRoutes'));
+app.use('/dashboard/api', require('./routes/dashboardRoutes'));
 
 // Root route
 app.get('/', (req, res) => {
