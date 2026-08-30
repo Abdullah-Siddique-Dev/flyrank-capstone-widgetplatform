@@ -1,13 +1,75 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
-generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
-}
-
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Tenant {
+  id          String       @id @default(uuid())
+  name        String
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  users       User[]
+  widgets     Widget[]
+  submissions Submission[]
+
+  @@map("tenants")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  tenantId     String   @map("tenant_id")
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@map("users")
+}
+
+model Widget {
+  id             String       @id @default(uuid())
+  tenantId       String       @map("tenant_id")
+  type           String       @default("signup")
+  title          String
+  description    String?
+  formFields     Json         @map("form_fields")
+  buttonText     String       @default("Submit") @map("button_text")
+  displayOptions Json?        @map("display_options")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  submissions    Submission[]
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@map("widgets")
+}
+
+model Submission {
+  id             String   @id @default(uuid())
+  widgetId       String   @map("widget_id")
+  tenantId       String   @map("tenant_id")
+  answers        Json
+  ipAddress      String?  @map("ip_address")
+  country        String?
+  city           String?
+  isSpam         Boolean  @default(false) @map("is_spam")
+  idempotencyKey String?  @unique @map("idempotency_key")
+  submittedAt    DateTime @default(now()) @map("submitted_at")
+
+  widget Widget @relation(fields: [widgetId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([widgetId])
+  @@index([tenantId])
+  @@index([submittedAt])
+  @@index([tenantId, submittedAt])
+  @@map("submissions")
 }
