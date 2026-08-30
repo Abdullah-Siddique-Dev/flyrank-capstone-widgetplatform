@@ -1,4 +1,4 @@
-﻿const express = require('express');
+const express = require('express');
 const cors = require('cors');
 const config = require('./config');
 const errorHandler = require('./middlewares/errorHandler');
@@ -21,6 +21,8 @@ app.use(express.static('public'));
 
 // Routes
 app.use('/api', healthRoutes);
+app.use('/api/widgets', require('./routes/submissionRoutes'));
+app.use('/api/submissions', require('./routes/submissionRoutes'));
 
 // Root route
 app.get('/', (req, res) => {
