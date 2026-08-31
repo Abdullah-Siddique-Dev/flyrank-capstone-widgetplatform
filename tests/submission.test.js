@@ -147,6 +147,7 @@ describe('Phase 2: Hardened Submission Path Tests', () => {
       const res = await request(app)
         .post(`/api/widgets/${widget.id}/submissions`)
         .set('x-forwarded-for', attackerIp)
+        .set('x-geo-mock-mode', 'mock_success')
         .send({ answers: { name: `Burst ${i}`, email: `burst${i}@example.com` } });
       expect(res.statusCode).toBe(201);
     }
@@ -155,6 +156,7 @@ describe('Phase 2: Hardened Submission Path Tests', () => {
     const throttledRes = await request(app)
       .post(`/api/widgets/${widget.id}/submissions`)
       .set('x-forwarded-for', attackerIp)
+      .set('x-geo-mock-mode', 'mock_success')
       .send({ answers: { name: 'Burst 11', email: 'burst11@example.com' } });
     expect(throttledRes.statusCode).toBe(429);
     expect(throttledRes.body.error).toBe('Too Many Requests');
@@ -163,6 +165,7 @@ describe('Phase 2: Hardened Submission Path Tests', () => {
     const legitimateRes = await request(app)
       .post(`/api/widgets/${widget.id}/submissions`)
       .set('x-forwarded-for', normalIp)
+      .set('x-geo-mock-mode', 'mock_success')
       .send({ answers: { name: 'Legit User', email: 'legit@example.com' } });
     expect(legitimateRes.statusCode).toBe(201);
   });
