@@ -1,8 +1,15 @@
-﻿const app = require('./app');
-const config = require('./config');
+const express = require("express");
+const cors = require("cors");
 
-const server = app.listen(config.PORT, () => {
-  console.log(`Lead Capture Platform server running on port ${config.PORT}`);
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.json({
+    message: "Lead Capture Platform API is running",
+  });
 });
 
-module.exports = server;
+module.exports = app;

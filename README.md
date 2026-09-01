@@ -176,40 +176,64 @@ node scripts/finalQAAudit.js
 
 ---
 
-## Output Screenshots & Verification Evidence
-
-### 1. Automated Test Suite Execution (36/36 Tests Passed)
-
-#### Overall Jest Test Suite Summary
-![Jest Test Suite Summary](./output-screenshots/image-2.png)
-
-#### Authentication, Tenant Isolation & Dashboard Tests
-![Auth and Dashboard Tests](./output-screenshots/image.png)
-
-#### Widget Delivery & Asset Caching Tests
-![Widget Delivery Tests](./output-screenshots/image-1.png)
-
-#### Hardened Submission Pipeline Tests
-![Submission Pipeline Tests](./output-screenshots/image-3.png)
-
----
-
-### 2. Live End-to-End QA Audit (12 Real Scenarios)
-
-#### Scenarios 1–3: Server Status, Database Health Check & Tenant A Registration
-![Scenarios 1 to 3](./output-screenshots/image-7.png)
-
-#### Scenario 4: Widget Creation & Embed Snippet Generation
-![Scenario 4](./output-screenshots/image-6.png)
-
-#### Scenarios 5–8: Config Fetching, Bundle Delivery, Lead Submission & PostgreSQL Verification
-![Scenarios 5 to 8](./output-screenshots/image-4.png)
-
-#### Scenarios 9–12: Owner Dashboard Analytics, Tenant B Creation & Server-Enforced Tenant Isolation
-![Scenarios 9 to 12](./output-screenshots/image-5.png)
-
----
-
 ## License
 
 ISC
+
+
+## Test Evidence
+
+The following screenshots provide evidence of successful automated testing and quality assurance verification.
+
+### Automated Test Suite
+
+All automated tests passed successfully.
+
+- Test Suites: 4 passed, 4 total
+- Tests: 36 passed, 36 total
+- Snapshots: 0 total
+
+
+![alt text](image.png)
+
+![alt text](image-1.png)
+
+![alt text](image-2.png)
+
+![alt text](image-3.png)
+
+### Open Handle Detection
+
+The test suite was also executed with Jest's open handle detection to verify that asynchronous resources are cleaned up correctly.
+
+```bash
+npx jest --runInBand --detectOpenHandles
+
+
+
+
+### Live End-to-End QA Audit
+
+A live 12-scenario end-to-end QA audit was executed against the application and PostgreSQL database.
+
+The audit successfully verified:
+
+- Server and API availability
+- PostgreSQL database connectivity
+- Tenant and owner registration
+- JWT authentication and password hash protection
+- Widget creation and public configuration privacy
+- Versioned widget bundle delivery and caching
+- Real lead submission
+- Durable PostgreSQL persistence
+- Owner dashboard lead visibility
+- Multi-tenant resource separation
+- Server-side cross-tenant access protection
+
+**Result: All 12 real-world QA scenarios passed successfully with zero defects.**
+
+
+![alt text](image-7.png)
+![alt text](image-6.png)
+![alt text](image-4.png)
+![alt text](image-5.png)
